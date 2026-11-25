@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Isolated lab: a shield around the test app, no external network">
+  <defs>
+    <linearGradient id="labShield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#22D3EE" stop-opacity="0.04"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="320" fill="#05080F"/>
+  <text x="240" y="34" text-anchor="middle" font-family="monospace" font-size="17" font-weight="bold" fill="#E6FFFA">Isolated lab — nothing leaves</text>
+  <!-- barred external-network arrow, outside the shield -->
+  <g stroke="#FF3B5C" stroke-width="3" stroke-linecap="round">
+    <line x1="392" y1="92" x2="452" y2="92"/>
+    <path d="M452 92 l-12 -7 M452 92 l-12 7" fill="none"/>
+  </g>
+  <g stroke="#FF3B5C" stroke-width="4" stroke-linecap="round">
+    <line x1="402" y1="66" x2="442" y2="118"/>
+  </g>
+  <circle cx="422" cy="92" r="30" fill="none" stroke="#FF3B5C" stroke-width="3"/>
+  <text x="422" y="152" text-anchor="middle" font-family="monospace" font-size="12" fill="#FF3B5C">no external</text>
+  <text x="422" y="169" text-anchor="middle" font-family="monospace" font-size="12" fill="#FF3B5C">network</text>
+  <!-- shield around the app -->
+  <path d="M240 52 L352 84 V168 C352 236 300 272 240 292 C180 272 128 236 128 168 V84 Z"
+        fill="url(#labShield)" stroke="#22D3EE" stroke-width="3" stroke-linejoin="round"/>
+  <!-- app window inside the shield -->
+  <g>
+    <rect x="168" y="118" width="144" height="104" rx="10" fill="#0B1220" stroke="#00E5A0" stroke-width="2"/>
+    <line x1="168" y1="142" x2="312" y2="142" stroke="#00E5A0" stroke-width="1.5"/>
+    <circle cx="182" cy="130" r="4" fill="#FF3B5C"/>
+    <circle cx="196" cy="130" r="4" fill="#FFB020"/>
+    <circle cx="210" cy="130" r="4" fill="#00E5A0"/>
+    <rect x="182" y="156" width="116" height="10" rx="5" fill="#22D3EE" opacity="0.5"/>
+    <rect x="182" y="174" width="80" height="10" rx="5" fill="#22D3EE" opacity="0.3"/>
+    <rect x="182" y="196" width="60" height="12" rx="6" fill="#00E5A0" opacity="0.8"/>
+  </g>
+  <path d="M212 252 l12 12 24 -26" fill="none" stroke="#00E5A0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="240" y="312" text-anchor="middle" font-family="monospace" font-size="12" fill="#94A3B8">tests run only against the lab target</text>
+</svg>

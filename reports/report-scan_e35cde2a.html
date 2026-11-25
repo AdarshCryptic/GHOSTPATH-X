@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>GHOSTPATH X — Report scan_e35cde2a</title>
+<style>body{font-family:sans-serif;margin:2rem}table{border-collapse:collapse}td,th{border:1px solid #999;padding:6px 10px;text-align:left}</style>
+</head><body>
+<h1>GHOSTPATH X — Scan Report</h1>
+<p>Author: Adarsh</p>
+<p>Scan: scan_e35cde2a &nbsp; Lab: Juice Shop Training Lab</p>
+<p>Endpoints: 8 &nbsp; Identities: 3 &nbsp; Attack paths: 7 &nbsp; Validated findings: 3</p>
+<table><tr><th>ID</th><th>Title</th><th>Severity</th><th>Endpoint</th><th>Observed</th><th>Remediation</th></tr>
+<tr><td>FIND-001</td><td>Cross-user object authorization</td><td>High</td><td>GET /api/orders/1001</td><td>200 for GET /api/orders/1001 as customer_b</td><td>Enforce per-object ownership checks on GET /api/orders/{id}: return 403 when the order owner differs from the authenticated identity.</td></tr><tr><td>FIND-002</td><td>Missing function-level authorization</td><td>High</td><td>POST /api/admin/promote</td><td>200 for POST /api/admin/promote as customer_a</td><td>Require the admin role on POST /api/admin/promote (and all /api/admin/* routes) before any state change.</td></tr><tr><td>FIND-003</td><td>Invalid workflow transition</td><td>Medium</td><td>POST /api/orders/1001/transition</td><td>200 for POST /api/orders/1001/transition shipped-&gt;created</td><td>Validate transitions server-side against the state model (created-&gt;paid, paid-&gt;shipped only); reject all others with 400.</td></tr>
+</table>
+<footer><p>Built by Adarsh &bull; GHOSTPATH X v0.2</p></footer>
+</body></html>

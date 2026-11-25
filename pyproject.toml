@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ghostpath-x"
+version = "0.2.0"
+description = "GHOSTPATH X — Autonomous attack-path discovery & exploit validation engine by Adarsh (isolated lab only). Follow the ghost. Prove the path."
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Adarsh" }]
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.32.1",
+    "pydantic==2.9.2",
+    "networkx==3.4.2",
+    "httpx==0.27.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["core*", "database*", "agents*", "discovery*", "identity*", "workflows*", "graph*", "testing*", "validation*", "reports*", "lab*", "apps*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

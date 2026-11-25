@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 240" role="img" aria-label="Attack path chain: Customer B, Order API, Order Resource, Authorization Boundary">
+  <defs>
+    <marker id="chainArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#00E5A0"/>
+    </marker>
+  </defs>
+  <rect width="960" height="240" fill="#05080F"/>
+  <!-- green path line behind the boxes -->
+  <line x1="60" y1="120" x2="900" y2="120" stroke="#00E5A0" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+  <g font-family="monospace" text-anchor="middle">
+    <g>
+      <rect x="40" y="72" width="180" height="96" rx="12" fill="#0B1220" stroke="#22D3EE" stroke-width="2"/>
+      <text x="130" y="112" font-size="17" font-weight="bold" fill="#E6FFFA">Customer B</text>
+      <text x="130" y="140" font-size="13" fill="#94A3B8">attacker identity</text>
+    </g>
+    <g>
+      <rect x="280" y="72" width="180" height="96" rx="12" fill="#0B1220" stroke="#22D3EE" stroke-width="2"/>
+      <text x="370" y="112" font-size="17" font-weight="bold" fill="#E6FFFA">Order API</text>
+      <text x="370" y="140" font-size="13" fill="#94A3B8">GET /orders/{id}</text>
+    </g>
+    <g>
+      <rect x="520" y="72" width="180" height="96" rx="12" fill="#0B1220" stroke="#22D3EE" stroke-width="2"/>
+      <text x="610" y="112" font-size="17" font-weight="bold" fill="#E6FFFA">Order Resource</text>
+      <text x="610" y="140" font-size="13" fill="#94A3B8">someone else's order</text>
+    </g>
+    <g>
+      <rect x="760" y="72" width="180" height="96" rx="12" fill="#0B1220" stroke="#FFB020" stroke-width="3"/>
+      <text x="850" y="106" font-size="16" font-weight="bold" fill="#FFB020">Authorization</text>
+      <text x="850" y="128" font-size="16" font-weight="bold" fill="#FFB020">Boundary</text>
+      <text x="850" y="152" font-size="13" fill="#94A3B8">the check that failed</text>
+    </g>
+  </g>
+  <g stroke="#00E5A0" stroke-width="3" marker-end="url(#chainArrow)">
+    <line x1="224" y1="120" x2="272" y2="120"/>
+    <line x1="464" y1="120" x2="512" y2="120"/>
+    <line x1="704" y1="120" x2="752" y2="120"/>
+  </g>
+  <text x="480" y="216" text-anchor="middle" font-family="monospace" font-size="14" fill="#94A3B8">Each step is replayed — the finding is real only if the whole chain holds.</text>
+</svg>

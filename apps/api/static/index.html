@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GHOSTPATH X — Security Operations Overview</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <aside id="sidebar" aria-label="Main navigation">
+    <div class="logo">
+      <img class="logo-img" src="assets/logo.svg" alt="GHOSTPATH X logo" onerror="this.style.display='none'">
+      <span>
+        <span class="logo-name">GHOSTPATH X</span><br>
+        <span class="logo-sub">by Adarsh</span><br>
+        <span class="logo-tagline">Follow the ghost. Prove the path.</span>
+      </span>
+    </div>
+    <nav id="nav">
+      <button class="nav-item active" data-nav="overview"><span class="nav-icon" aria-hidden="true">▦</span>Overview</button>
+      <button class="nav-item" data-nav="about"><span class="nav-icon" aria-hidden="true">ℹ</span>About</button>
+      <button class="nav-item" data-nav="owner"><span class="nav-icon" aria-hidden="true">🔒</span>Owner</button>
+      <button class="nav-item" data-nav="labs"><span class="nav-icon" aria-hidden="true">🧪</span>Labs</button>
+      <button class="nav-item" data-nav="scans"><span class="nav-icon" aria-hidden="true">▶</span>Live Scans</button>
+      <button class="nav-item" data-nav="graph"><span class="nav-icon" aria-hidden="true">◈</span>Attack Graph</button>
+      <button class="nav-item" data-nav="findings"><span class="nav-icon" aria-hidden="true">⚠</span>Findings</button>
+      <button class="nav-item" data-nav="challenges"><span class="nav-icon" aria-hidden="true">👻</span>Challenges</button>
+      <button class="nav-item" data-nav="ctf"><span class="nav-icon" aria-hidden="true">🎯</span>CTF Machines <span class="nav-badge hidden" id="ctf-nav-count"></span></button>
+      <button class="nav-item" data-nav="evidence"><span class="nav-icon" aria-hidden="true">▤</span>Evidence &amp; Reports</button>
+      <button class="nav-item" data-nav="agents"><span class="nav-icon" aria-hidden="true">🤖</span>Agent Runs</button>
+      <button class="nav-item" data-nav="settings"><span class="nav-icon" aria-hidden="true">⚙</span>Settings</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="profile-card">
+        <span class="profile-avatar" aria-hidden="true">A</span>
+        <span>
+          <span class="profile-name">Adarsh</span><br>
+          <span class="profile-role">Security Researcher</span>
+        </span>
+      </div>
+      <p style="margin:12px 0 0"><span class="dot dot-green"></span>Isolated lab only<br>
+      <span class="small">No external network access</span></p>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+    <div id="loading" class="loading">
+      <span class="spinner" aria-hidden="true"></span>
+      <span id="loading-text">Connecting to lab and starting scan…</span>
+    </div>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="page" id="page-overview">
+      <div class="topbar">
+        <span class="badge badge-green">Isolated Lab</span>
+        <select id="lab-selector" aria-label="Select lab">
+          <option value="">Loading labs…</option>
+        </select>
+        <span class="spacer"></span>
+        <span id="scan-status-pill" class="badge badge-grey"><span class="dot"></span><span id="scan-status-text">Idle</span></span>
+        <button id="refresh-overview-btn" type="button">Refresh</button>
+      </div>
+
+      <div class="brand-header">
+        <img class="logo-img" src="assets/logo.svg" alt="GHOSTPATH X logo" onerror="this.style.display='none'">
+        <div>
+          <h1>GHOSTPATH X — by Adarsh</h1>
+          <span class="brand-byline">Autonomous Attack-Path Discovery &amp; Exploit Validation</span>
+        </div>
+      </div>
+      <p class="brand-tagline">Follow the ghost. Prove the path.</p>
+      <p class="subtitle">Security Operations Overview &bull; Autonomous application testing &bull; Isolated lab</p>
+
+      <div class="grid-stats">
+        <div class="stat-card">
+          <div class="stat-label">Endpoints discovered</div>
+          <div class="stat-value" id="stat-endpoints">—</div>
+          <div class="stat-sub">from live scan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Identities mapped</div>
+          <div class="stat-value" id="stat-identities">—</div>
+          <div class="stat-sub">from live scan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Attack paths</div>
+          <div class="stat-value" id="stat-paths">—</div>
+          <div class="stat-sub">candidate + validated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Validated findings</div>
+          <div class="stat-value" id="stat-findings">—</div>
+          <div class="stat-sub">evidence-backed</div>
+        </div>
+      </div>
+
+      <div class="grid-2 grid-2-wrap">
+        <div class="panel">
+          <div class="panel-head"><h2>Live Scan Activity</h2><span class="hint" id="scan-id-label"></span></div>
+          <div class="progress-row">
+            <div class="progress-track" role="progressbar" aria-label="Scan progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="scan-progress-track">
+              <div class="progress-fill" id="scan-progress-fill" style="width: 0%"></div>
+            </div>
+            <span class="progress-pct" id="scan-progress-pct">0%</span>
+          </div>
+          <p class="phase-line">Current Phase: <strong id="scan-phase">—</strong></p>
+          <ol class="timeline" id="scan-timeline">
+            <li data-step="discovery"><span>Discovery</span><span class="step-state">Waiting</span></li>
+            <li data-step="identity"><span>Identity mapping</span><span class="step-state">Waiting</span></li>
+            <li data-step="workflow"><span>Workflow model generated</span><span class="step-state">Waiting</span></li>
+            <li data-step="paths"><span>Candidate paths ranked</span><span class="step-state">Waiting</span></li>
+            <li data-step="validation"><span>Validation</span><span class="step-state">Waiting</span></li>
+          </ol>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Agent Status</h2><span class="hint">7 agents</span></div>
+          <ul class="agent-list" id="agent-list">
+            <li><span class="agent-name">Loading agents…</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-2 grid-2-wrap">
+        <div class="panel">
+          <div class="panel-head"><h2>Attack Path Intelligence</h2></div>
+          <svg class="diagram" viewBox="0 0 680 300" role="img" aria-label="Attack path diagram: Customer A to Order API to Order Resource to Authorization Boundary, with a dashed candidate path arc above and a solid verified path arc below">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#8B9BB4"></path>
+              </marker>
+              <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#00E5A0"></path>
+              </marker>
+            </defs>
+            <!-- candidate path arc (dashed green) -->
+            <path d="M 95 118 C 220 34, 460 34, 595 118" fill="none" stroke="#00E5A0" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-green)"></path>
+            <text x="340" y="30" text-anchor="middle" fill="#00E5A0" font-size="12">Candidate Path</text>
+            <!-- verified path arc (solid green) -->
+            <path d="M 95 168 C 220 252, 460 252, 595 168" fill="none" stroke="#00E5A0" stroke-width="3" marker-end="url(#arrow-green)"></path>
+            <text x="340" y="282" text-anchor="middle" fill="#00E5A0" font-size="12">Verified Path</text>
+            <!-- nodes -->
+            <g>
+              <rect x="20" y="120" width="150" height="46" rx="8" fill="#0F172A" stroke="#334155"></rect>
+              <text x="95" y="139" text-anchor="middle" fill="#e2e8f0" font-size="13">Customer A</text>
+              <text x="95" y="156" text-anchor="middle" fill="#8B9BB4" font-size="11">Identity</text>
+            </g>
+            <g>
+              <rect x="205" y="120" width="150" height="46" rx="8" fill="#0F172A" stroke="#334155"></rect>
+              <text x="280" y="139" text-anchor="middle" fill="#e2e8f0" font-size="13">Order API</text>
+              <text x="280" y="156" text-anchor="middle" fill="#8B9BB4" font-size="11">Endpoint</text>
+            </g>
+            <g>
+              <rect x="390" y="120" width="150" height="46" rx="8" fill="#0F172A" stroke="#334155"></rect>
+              <text x="465" y="139" text-anchor="middle" fill="#e2e8f0" font-size="13">Order Resource</text>
+              <text x="465" y="156" text-anchor="middle" fill="#8B9BB4" font-size="11">Resource</text>
+            </g>
+            <g>
+              <rect x="560" y="120" width="110" height="46" rx="8" fill="#0F172A" stroke="#FFB020"></rect>
+              <text x="615" y="139" text-anchor="middle" fill="#e2e8f0" font-size="12">Authorization</text>
+              <text x="615" y="156" text-anchor="middle" fill="#8B9BB4" font-size="11">Boundary</text>
+            </g>
+            <!-- relationship arrows -->
+            <line x1="170" y1="143" x2="203" y2="143" stroke="#8B9BB4" stroke-width="1.5" marker-end="url(#arrow)"></line>
+            <line x1="355" y1="143" x2="388" y2="143" stroke="#8B9BB4" stroke-width="1.5" marker-end="url(#arrow)"></line>
+            <line x1="540" y1="143" x2="558" y2="143" stroke="#8B9BB4" stroke-width="1.5" marker-end="url(#arrow)"></line>
+          </svg>
+          <div class="legend">
+            <span class="legend-item"><span class="sw-node"></span>Component</span>
+            <span class="legend-item"><span class="sw-line"></span>Relationship</span>
+            <span class="legend-item"><span class="sw-candidate"></span>Candidate Path</span>
+            <span class="legend-item"><span class="sw-verified"></span>Verified Path</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Finding Severity</h2></div>
+          <div class="donut-wrap">
+            <div class="donut" id="severity-donut">
+              <div class="donut-hole"><span class="total" id="donut-total">0</span><small>findings</small></div>
+            </div>
+            <ul class="sev-legend" id="severity-legend">
+              <li><span class="sev-dot" style="background:#FF3B5C"></span>Critical<span class="count" id="sev-critical">0</span></li>
+              <li><span class="sev-dot" style="background:#FFB020"></span>High<span class="count" id="sev-high">0</span></li>
+              <li><span class="sev-dot" style="background:#facc15"></span>Medium<span class="count" id="sev-medium">0</span></li>
+              <li><span class="sev-dot" style="background:#00E5A0"></span>Low<span class="count" id="sev-low">0</span></li>
+              <li><span class="sev-dot" style="background:#8B9BB4"></span>Info<span class="count" id="sev-info">0</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Findings</h2><button id="view-all-findings-btn" type="button">View all</button></div>
+        <ul class="finding-list" id="recent-findings">
+          <li><span class="finding-title muted">Loading findings…</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="page hidden" id="page-about">
+      <div class="page-head">
+        <h1>About GHOSTPATH X</h1>
+        <p>What it is, what real-life problem it solves, and how to try it yourself.</p>
+      </div>
+
+      <!-- hero -->
+      <div class="panel about-hero">
+        <img class="about-hero-img" src="assets/about/about-hero.svg" alt="GHOSTPATH X — a ghost following a glowing attack path through a network" onerror="this.style.display='none'">
+        <div>
+          <h1>GHOSTPATH X — by Adarsh</h1>
+          <p class="about-tagline">Follow the ghost. Prove the path.</p>
+          <p class="about-summary">An AI-powered security testing tool that finds attack paths in a web app and proves each one really works — safely, inside an isolated lab.</p>
+        </div>
+      </div>
+
+      <!-- what is this -->
+      <div class="panel">
+        <div class="panel-head"><h2>What is this?</h2></div>
+        <p>GHOSTPATH X is an autonomous security tester for web apps. Think of it as a ghost that walks through an app, finds the ways in, and proves which ones actually work. It does five things:</p>
+        <img class="about-wide-img" src="assets/about/about-path-chain.svg" alt="Attack path chain: user, API, resource, authorization boundary" onerror="this.style.display='none'">
+        <div class="about-cards">
+          <div class="about-card">
+            <img class="about-card-icon" src="assets/agent-discovery.svg" alt="" aria-hidden="true" onerror="this.style.display='none'">
+            <h3>Discover</h3>
+            <p>It explores a web app like a curious visitor, mapping pages, APIs, users and roles.</p>
+          </div>
+          <div class="about-card">
+            <img class="about-card-icon" src="assets/agent-graph.svg" alt="" aria-hidden="true" onerror="this.style.display='none'">
+            <h3>Connect</h3>
+            <p>It draws an attack graph linking users → endpoints → resources → permissions.</p>
+          </div>
+          <div class="about-card">
+            <img class="about-card-icon" src="assets/agent-reasoning.svg" alt="" aria-hidden="true" onerror="this.style.display='none'">
+            <h3>Reason</h3>
+            <p>It ranks the most likely attack paths, e.g. one user reading another user's order.</p>
+          </div>
+          <div class="about-card">
+            <img class="about-card-icon" src="assets/agent-validation.svg" alt="" aria-hidden="true" onerror="this.style.display='none'">
+            <h3>Prove</h3>
+            <p>It runs a safe, bounded test and only reports a finding when the test actually fails, with evidence.</p>
+          </div>
+          <div class="about-card">
+            <img class="about-card-icon" src="assets/agent-evidence.svg" alt="" aria-hidden="true" onerror="this.style.display='none'">
+            <h3>Report</h3>
+            <p>It writes the full writeup in Word/PDF with reproduction steps and the fix.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- real-life problem -->
+      <div class="panel">
+        <div class="panel-head"><h2>What real-life problem does it solve?</h2></div>
+        <p>Security testing has three everyday problems. GHOSTPATH X answers all three.</p>
+        <div class="about-problems">
+          <div class="about-problem">
+            <h3>1. Too much noise</h3>
+            <p><strong>Before:</strong> normal scanners shout about hundreds of single issues, and nobody knows which ones actually matter or combine into a real break-in.</p>
+            <p><strong>After:</strong> GHOSTPATH X connects findings into verified attack paths, so you see the one chain that actually leads somewhere — not a pile of warnings.</p>
+          </div>
+          <div class="about-problem">
+            <h3>2. AI tools guess</h3>
+            <p><strong>Before:</strong> AI tools guess — they claim an exploit works without proof, so teams waste time on false alarms.</p>
+            <p><strong>After:</strong> GHOSTPATH X proves every link with a deterministic test before reporting. If the test does not fail, there is no finding.</p>
+          </div>
+          <div class="about-problem">
+            <h3>3. Testing live sites is dangerous</h3>
+            <p><strong>Before:</strong> testing a live website is dangerous and often illegal without permission.</p>
+            <p><strong>After:</strong> GHOSTPATH X only ever runs inside an isolated lab you own. Nothing touches a real site or real user data.</p>
+          </div>
+        </div>
+        <img class="about-wide-img" src="assets/about/about-noise-vs-path.svg" alt="Before: a noisy list of scanner warnings. After: one verified attack path." onerror="this.style.display='none'">
+        <div class="about-example">
+          <h3>A real lab example</h3>
+          <p>Customer B reads Customer A's order → that is not just a warning, it is a proven path: Customer B → Order API → Order Resource → Authorization Boundary — tested twice, evidence saved.</p>
+        </div>
+      </div>
+
+      <!-- how it works -->
+      <div class="panel">
+        <div class="panel-head"><h2>How it works</h2></div>
+        <ol class="about-steps">
+          <li><strong>Lab</strong><span>Start with an isolated lab you own — a test copy of the app.</span></li>
+          <li><strong>Discover</strong><span>Explore the app and map its pages, APIs and users.</span></li>
+          <li><strong>Map</strong><span>Draw the attack graph: who can reach what.</span></li>
+          <li><strong>Reason</strong><span>Rank the most likely attack paths.</span></li>
+          <li><strong>Validate</strong><span>Run a safe, bounded test on each path to prove it.</span></li>
+          <li><strong>Report</strong><span>Write the writeup with evidence, steps and the fix.</span></li>
+        </ol>
+        <div class="about-how-images">
+          <img class="about-how-img" src="assets/radar.gif" alt="Radar sweep — scan in progress" onerror="this.style.display='none'">
+          <img class="about-how-img" src="assets/about/about-path-walk.gif" alt="A dot travelling along an attack path, turning green when each step is verified" onerror="this.style.display='none'">
+        </div>
+        <h3>The 7 agents</h3>
+        <p>Seven small agents do the work, one job each. The AI only reasons and suggests — plain Python runs the tests.</p>
+        <div class="about-agents">
+          <div class="about-agent"><strong>Discovery</strong><span>explores the app</span></div>
+          <div class="about-agent"><strong>Identity</strong><span>maps users and roles</span></div>
+          <div class="about-agent"><strong>Workflow</strong><span>models user journeys</span></div>
+          <div class="about-agent"><strong>Graph Intelligence</strong><span>connects everything into a graph</span></div>
+          <div class="about-agent"><strong>Attack Reasoning</strong><span>ranks attack paths</span></div>
+          <div class="about-agent"><strong>Validation</strong><span>runs the proof tests</span></div>
+          <div class="about-agent"><strong>Evidence</strong><span>writes the report</span></div>
+        </div>
+      </div>
+
+      <!-- is it safe -->
+      <div class="panel">
+        <div class="panel-head"><h2>Is it safe?</h2></div>
+        <div class="about-safety">
+          <img class="about-safety-img" src="assets/about/about-isolated-lab.svg" alt="A shield around a small app — the isolated lab" onerror="this.style.display='none'">
+          <div>
+            <p><strong>Isolated lab only.</strong> Scans only ever run against a lab you own, in a closed environment.</p>
+            <p><strong>Lab Policy Engine.</strong> Allowed hosts only, 60 requests per minute, no external network, no shell.</p>
+            <p><strong>AI only reasons, Python only runs approved tests.</strong> The AI suggests paths; deterministic Python code runs the actual tests — nothing else is executed.</p>
+            <p><strong>No real data.</strong> Synthetic lab accounts only — no real users, no real orders, no real secrets.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- who built it -->
+      <div class="panel">
+        <div class="panel-head"><h2>Who built it?</h2></div>
+        <div class="about-builder">
+          <span class="profile-avatar" aria-hidden="true">A</span>
+          <div>
+            <strong>Adarsh</strong><br>
+            <span class="muted">Security Researcher</span>
+            <p>Built for learning and for showing secure coding — an autonomous pentester that proves its own claims, inside a lab it cannot escape.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- try it yourself -->
+      <div class="panel">
+        <div class="panel-head"><h2>Try it yourself</h2></div>
+        <ol class="about-try">
+          <li><code>pip install -r requirements.txt</code></li>
+          <li><code>python run.py</code></li>
+          <li>Open <code>http://127.0.0.1:8000</code></li>
+        </ol>
+        <p>Then run a scan on <strong>Overview</strong>, solve a challenge on the <strong>Challenges</strong> page, and open <strong>CTF Machines</strong> to practise on free VMs.</p>
+      </div>
+    </section>
+
+    <!-- ============ OWNER ============ -->
+    <section class="page hidden" id="page-owner">
+      <div class="page-head">
+        <h1>Owner</h1>
+        <p>Details of the official owner of GHOSTPATH X — locked behind a PIN.</p>
+      </div>
+
+      <div class="panel owner-panel" id="owner-lock">
+        <div class="owner-lock-icon" aria-hidden="true">🔒</div>
+        <h2>Owner — locked</h2>
+        <p class="muted">Enter the 6-digit owner PIN to see the owner details.</p>
+        <form id="owner-unlock-form" class="owner-form" autocomplete="off">
+          <label for="owner-pin">Owner PIN
+            <input type="password" id="owner-pin" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••" aria-label="6-digit owner PIN">
+          </label>
+          <button type="submit" class="primary" id="owner-unlock-btn">Unlock</button>
+        </form>
+        <p class="form-status err" id="owner-error" role="alert"></p>
+      </div>
+
+      <div class="panel owner-panel hidden" id="owner-details">
+        <div class="panel-head"><h2>Owner details</h2><button type="button" id="owner-lock-btn">Lock again</button></div>
+        <div class="about-builder">
+          <span class="profile-avatar" aria-hidden="true">A</span>
+          <div>
+            <strong id="owner-name">Adarsh</strong><br>
+            <span class="muted" id="owner-role">Official owner and creator of GHOSTPATH X</span>
+            <p id="owner-title">Security researcher</p>
+            <p id="owner-projects"></p>
+          </div>
+        </div>
+        <p class="muted small">Shown only after unlocking. The session token expires after 30 minutes.</p>
+      </div>
+    </section>
+
+    <!-- ============ LABS ============ -->
+    <section class="page hidden" id="page-labs">
+      <div class="page-head">
+        <h1>Labs</h1>
+        <p>Isolated test environments. Scans only ever run against labs listed here.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Registered labs</h2><button id="refresh-labs-btn" type="button">Refresh</button></div>
+        <ul class="agent-list" id="labs-list">
+          <li><span class="agent-name">Loading labs…</span></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>New Lab</h2></div>
+        <form id="new-lab-form" class="form-grid">
+          <label>Name
+            <input type="text" id="new-lab-name" required placeholder="Juice Shop Training Lab" autocomplete="off">
+          </label>
+          <label>Base URL
+            <input type="url" id="new-lab-url" required placeholder="http://127.0.0.1:8000/lab" autocomplete="off">
+          </label>
+          <label>Environment
+            <select id="new-lab-env">
+              <option value="isolated_docker">isolated_docker</option>
+              <option value="local">local</option>
+              <option value="staging">staging</option>
+            </select>
+          </label>
+          <div><button class="primary" type="submit">Create lab</button></div>
+        </form>
+        <p class="form-status" id="lab-form-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ============ LIVE SCANS ============ -->
+    <section class="page hidden" id="page-scans">
+      <div class="page-head">
+        <h1>Live Scans</h1>
+        <p>Current scan progress and control. Scans run synchronously and return when complete.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2 id="live-scan-title">Current scan</h2><span class="hint" id="live-scan-id"></span></div>
+        <div class="progress-row">
+          <div class="progress-track">
+            <div class="progress-fill" id="live-scan-progress-fill" style="width: 0%"></div>
+          </div>
+          <span class="progress-pct" id="live-scan-progress-pct">0%</span>
+        </div>
+        <p class="phase-line">Status: <strong id="live-scan-status">—</strong></p>
+        <p class="phase-line">Current Phase: <strong id="live-scan-phase">—</strong></p>
+        <p class="phase-line">Endpoints: <strong id="live-scan-endpoints">—</strong> &nbsp; Identities: <strong id="live-scan-identities">—</strong> &nbsp; Attack paths: <strong id="live-scan-paths">—</strong> &nbsp; Validated findings: <strong id="live-scan-findings">—</strong></p>
+        <div class="radar-wrap hidden" id="radar-wrap">
+          <img src="assets/radar.gif" alt="Radar sweep — scan in progress" width="480" height="240">
+          <div class="radar-caption"><span class="dot dot-cyan dot-pulse live-dot"></span> Scanning — following the ghost…</div>
+        </div>
+        <div class="btn-row">
+          <button id="stop-scan-btn" type="button" class="danger">Stop scan</button>
+          <button id="refresh-scan-btn" type="button">Refresh status</button>
+          <button id="new-scan-btn" type="button" class="primary">Start new scan</button>
+        </div>
+        <p class="form-status" id="scan-action-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ============ ATTACK GRAPH ============ -->
+    <section class="page hidden" id="page-graph">
+      <div class="page-head">
+        <h1>Exploit Graph</h1>
+        <p>Attack surface as a graph: identities, endpoints, resources, findings and the relationships between them.</p>
+      </div>
+      <div class="graph-controls">
+        <label>Max Nodes
+          <input type="range" id="graph-max-nodes" min="10" max="1000" step="10" value="500">
+          <span id="graph-max-nodes-value" class="mono">500</span>
+        </label>
+        <label>Domain
+          <select id="graph-domain">
+            <option value="all">All domains</option>
+            <option value="juice.bugbase.ai" selected>juice.bugbase.ai</option>
+          </select>
+        </label>
+        <label>Search
+          <input type="search" id="graph-search" placeholder="Search exploit graph nodes…" aria-label="Search exploit graph nodes">
+        </label>
+        <span class="spacer" style="flex:1"></span>
+        <button id="graph-zoom-in" type="button" aria-label="Zoom in">+</button>
+        <button id="graph-zoom-out" type="button" aria-label="Zoom out">−</button>
+        <button id="graph-reset-view" type="button">Reset view</button>
+      </div>
+      <div class="graph-body">
+        <div class="graph-canvas-wrap">
+          <canvas id="graph-canvas" aria-label="Exploit graph canvas. Drag nodes to move them, click a node to select it, right-click for details, scroll to zoom."></canvas>
+          <div class="graph-empty hidden" id="graph-empty">
+            <img src="assets/graph-empty.svg" alt="Attack graph empty state — no graph data yet">
+            <p>No graph data yet — run a scan to light up the paths.</p>
+          </div>
+        </div>
+        <div class="graph-details" id="graph-details" aria-live="polite">
+          <h3>Node details</h3>
+          <p class="muted">Click a node in the graph to inspect it. Drag nodes to rearrange, scroll to zoom.</p>
+        </div>
+      </div>
+      <div class="graph-footer">
+        <span id="graph-counts">— nodes | — edges</span>
+        <span class="hint">Drag to move &bull; Click to select &bull; Right-click for details &bull; Scroll to zoom</span>
+      </div>
+    </section>
+
+    <!-- ============ FINDINGS ============ -->
+    <section class="page hidden" id="page-findings">
+      <div class="page-head">
+        <h1>Findings</h1>
+        <p>Validated and candidate findings from the current scan. Select a row to see reproduction steps, evidence and remediation.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2 id="findings-count">0 findings</h2><button id="refresh-findings-btn" type="button">Refresh</button></div>
+        <div class="table-wrap">
+          <table id="findings-table">
+            <thead>
+              <tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Category</th><th>Summary</th></tr>
+            </thead>
+            <tbody id="findings-tbody">
+              <tr><td colspan="6" class="muted">Loading findings…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="email-box" id="email-box-findings">
+          <label for="email-findings">Email the attack writeup</label>
+          <input type="email" id="email-findings" placeholder="you@example.com" autocomplete="email" aria-label="Email address for the writeup">
+          <select id="email-format-findings" aria-label="Writeup format">
+            <option value="docx">Word (.docx)</option>
+            <option value="pdf">PDF</option>
+            <option value="both">Both (Word + PDF)</option>
+          </select>
+          <button type="button" class="primary" id="send-writeup-findings">Send writeup</button>
+          <p class="email-status" id="email-status-findings" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHALLENGES ============ -->
+    <section class="page hidden" id="page-challenges">
+      <div class="page-head">
+        <h1>Challenges</h1>
+        <p>Solve it, learn from it. Each challenge is a hands-on attack path from the lab — download the brief, use the hints, solve it, then generate the writeup.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Available challenges</h2><button id="refresh-challenges-btn" type="button">Refresh</button></div>
+        <div class="challenges-grid" id="challenges-grid">
+          <p class="muted">Loading challenges…</p>
+        </div>
+        <p class="form-status" id="challenges-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ============ CTF MACHINES ============ -->
+    <section class="page hidden" id="page-ctf">
+      <div class="page-head">
+        <h1>CTF Machines</h1>
+        <p>Free and freemium machines and labs to practise on — download a VM, join an online lab, or play a wargame. Pick a source, filter, solve, and mark it done.</p>
+      </div>
+
+      <div class="safety-note" role="note">Only attack systems you own or have explicit permission to test. Run downloaded VMs on Host-Only networking, never bridged to your home LAN. VulnHub itself warns it cannot check every machine.</div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Sources</h2><span class="hint">Click a source card to filter the list below</span></div>
+        <div class="ctf-sources-grid" id="ctf-sources-grid">
+          <p class="muted">Loading sources…</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2 id="ctf-count">0 machines</h2><button id="refresh-ctf-btn" type="button">Refresh</button></div>
+        <div class="ctf-filters">
+          <label>Source
+            <select id="ctf-filter-source" aria-label="Filter by source">
+              <option value="">All sources</option>
+            </select>
+          </label>
+          <label>Difficulty
+            <select id="ctf-filter-difficulty" aria-label="Filter by difficulty">
+              <option value="">All</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </label>
+          <label>Type
+            <select id="ctf-filter-type" aria-label="Filter by type">
+              <option value="">All</option>
+              <option value="downloadable VM">downloadable VM</option>
+              <option value="online lab">online lab</option>
+              <option value="web app">web app</option>
+              <option value="wargame">wargame</option>
+            </select>
+          </label>
+          <label class="ctf-search-label">Search
+            <input type="search" id="ctf-filter-q" placeholder="Search name, description, topics…" aria-label="Search machines">
+          </label>
+          <button id="ctf-clear-filters-btn" type="button">Clear filters</button>
+        </div>
+        <p class="ctf-progress" id="ctf-progress" role="status">— machines solved</p>
+        <div class="ctf-machines-list" id="ctf-machines-list">
+          <p class="muted">Loading machines…</p>
+        </div>
+        <p class="form-status" id="ctf-status" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ============ EVIDENCE & REPORTS ============ -->
+    <section class="page hidden" id="page-evidence">
+      <div class="page-head">
+        <h1>Evidence &amp; Reports</h1>
+        <p>Reproducible evidence for every finding, plus the full scan report.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Scan report</h2></div>
+        <p class="muted" id="report-scan-label">No scan loaded yet.</p>
+        <div class="btn-row">
+          <a id="report-json-link" class="button-link" href="#" target="_blank" rel="noopener">Download JSON</a>
+          <button id="report-html-btn" type="button">Download HTML</button>
+          <button id="report-local-json-btn" type="button">Download scan JSON (local copy)</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Finding evidence</h2></div>
+        <div id="evidence-list">
+          <p class="empty">Loading evidence…</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Email the attack writeup</h2></div>
+        <div class="email-box" id="email-box-evidence">
+          <label for="email-evidence">Email the attack writeup</label>
+          <input type="email" id="email-evidence" placeholder="you@example.com" autocomplete="email" aria-label="Email address for the writeup">
+          <select id="email-format-evidence" aria-label="Writeup format">
+            <option value="docx">Word (.docx)</option>
+            <option value="pdf">PDF</option>
+            <option value="both">Both (Word + PDF)</option>
+          </select>
+          <button type="button" class="primary" id="send-writeup-evidence">Send writeup</button>
+          <p class="email-status" id="email-status-evidence" role="status"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ AGENT RUNS ============ -->
+    <section class="page hidden" id="page-agents">
+      <div class="page-head">
+        <h1>Agent Runs</h1>
+        <p>Status of the seven autonomous agents for the current scan.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Agents</h2><button id="refresh-agents-btn" type="button">Refresh</button></div>
+        <ul class="agent-list" id="agent-runs-list">
+          <li><span class="agent-name">Loading agents…</span></li>
+        </ul>
+        <p class="muted small" id="agent-runs-updated"></p>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS ============ -->
+    <section class="page hidden" id="page-settings">
+      <div class="page-head">
+        <h1>Settings</h1>
+        <p>Lab policy is fixed for v0.1 and shown read-only. Nothing here can reach the external network.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Lab Policy</h2></div>
+        <dl class="kv">
+          <dt>Allowed hosts</dt><dd class="mono">127.0.0.1, lab.local</dd>
+          <dt>Rate limit</dt><dd>max 60 requests / minute</dd>
+          <dt>External network</dt><dd>OFF — egress blocked</dd>
+          <dt>State-changing tests</dt><dd>OFF — read-only probes only</dd>
+          <dt>Scope</dt><dd>Isolated lab only — never production</dd>
+        </dl>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>API</h2></div>
+        <dl class="kv">
+          <dt>API base</dt><dd class="mono" id="settings-api-base">—</dd>
+          <dt>Connection</dt><dd id="settings-conn-status">Not tested yet</dd>
+        </dl>
+        <div class="btn-row">
+          <button id="test-connection-btn" type="button">Test connection</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">Built by <strong>Adarsh</strong> &bull; GHOSTPATH X v0.4 &bull; Follow the ghost. Prove the path.</footer>
+
+  </main>
+</div>
+<noscript><p style="padding:20px">GHOSTPATH X requires JavaScript — the dashboard renders live scan data from the API.</p></noscript>
+<script src="app.js"></script>
+</body>
+</html>

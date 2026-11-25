@@ -1,0 +1,101 @@
+{
+  "scan_id": "scan_e35cde2a",
+  "lab_id": "lab_ac6335a6",
+  "lab_name": "Juice Shop Training Lab",
+  "status": "completed",
+  "counts": {
+    "endpoints_discovered": 8,
+    "identities_mapped": 3,
+    "attack_paths": 7,
+    "validated_findings": 3
+  },
+  "findings": [
+    {
+      "id": "FIND-001",
+      "scan_id": "scan_e35cde2a",
+      "title": "Cross-user object authorization",
+      "severity": "High",
+      "endpoint": "GET /api/orders/1001",
+      "identity": "customer_b",
+      "description": "customer_b can read customer_a's order_1001 (HTTP 200); expected 403.",
+      "category": "Broken Object Level Authorization",
+      "remediation": "Enforce per-object ownership checks on GET /api/orders/{id}: return 403 when the order owner differs from the authenticated identity.",
+      "reproduction": "GET /api/orders/1001 as customer_b returns 200 with order_1001.",
+      "summary": "customer_b can read customer_a's order_1001 (HTTP 200); expected 403.",
+      "status": "validated",
+      "invariant_id": "INV-USER-ISOLATION",
+      "expected": "403 for cross-user order access",
+      "observed": "200 for GET /api/orders/1001 as customer_b",
+      "reproducible": true,
+      "evidence": {
+        "request": {
+          "identity": "customer_b",
+          "endpoint": "GET /api/orders/1001"
+        },
+        "response": {
+          "observed": "200 for GET /api/orders/1001 as customer_b",
+          "expected": "403 for cross-user order access"
+        },
+        "hash": "3b7f40a56e95b7628457097923d270e110fb7b0ac393b796e29864899f2836cc"
+      }
+    },
+    {
+      "id": "FIND-002",
+      "scan_id": "scan_e35cde2a",
+      "title": "Missing function-level authorization",
+      "severity": "High",
+      "endpoint": "POST /api/admin/promote",
+      "identity": "customer_a",
+      "description": "customer_a can POST /api/admin/promote (HTTP 200); expected 403 for non-admins.",
+      "category": "Broken Function Level Authorization",
+      "remediation": "Require the admin role on POST /api/admin/promote (and all /api/admin/* routes) before any state change.",
+      "reproduction": "POST /api/admin/promote as customer_a returns 200.",
+      "summary": "customer_a can POST /api/admin/promote (HTTP 200); expected 403 for non-admins.",
+      "status": "validated",
+      "invariant_id": "INV-ROLE-BOUNDARY",
+      "expected": "403 for non-admin POST /api/admin/promote",
+      "observed": "200 for POST /api/admin/promote as customer_a",
+      "reproducible": true,
+      "evidence": {
+        "request": {
+          "identity": "customer_a",
+          "endpoint": "POST /api/admin/promote"
+        },
+        "response": {
+          "observed": "200 for POST /api/admin/promote as customer_a",
+          "expected": "403 for non-admin POST /api/admin/promote"
+        },
+        "hash": "3fc04ca0cf834cd5511ba58e2b923393a5d1155cd4e59e6f2b123aafdee2fc30"
+      }
+    },
+    {
+      "id": "FIND-003",
+      "scan_id": "scan_e35cde2a",
+      "title": "Invalid workflow transition",
+      "severity": "Medium",
+      "endpoint": "POST /api/orders/1001/transition",
+      "identity": "customer_a",
+      "description": "POST /api/orders/1001/transition {\"to_state\": \"created\"} on a shipped order returns 200; expected 400.",
+      "category": "Business Logic / Workflow",
+      "remediation": "Validate transitions server-side against the state model (created->paid, paid->shipped only); reject all others with 400.",
+      "reproduction": "POST /api/orders/1001/transition {\"to_state\": \"created\"} as customer_a returns 200.",
+      "summary": "POST /api/orders/1001/transition {\"to_state\": \"created\"} on a shipped order returns 200; expected 400.",
+      "status": "validated",
+      "invariant_id": "INV-WORKFLOW-INTEGRITY",
+      "expected": "400 for invalid transition shipped -> created",
+      "observed": "200 for POST /api/orders/1001/transition shipped->created",
+      "reproducible": true,
+      "evidence": {
+        "request": {
+          "identity": "customer_a",
+          "endpoint": "POST /api/orders/1001/transition"
+        },
+        "response": {
+          "observed": "200 for POST /api/orders/1001/transition shipped->created",
+          "expected": "400 for invalid transition shipped -> created"
+        },
+        "hash": "3f51cf1a7a00f6e26a8b229ca89120556423966fa0e505223ecf4d3aa4610daf"
+      }
+    }
+  ]
+}

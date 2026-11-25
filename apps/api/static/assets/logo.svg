@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="GHOSTPATH X logo">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#22D3EE" stop-opacity="0.45"/>
+      <stop offset="60%" stop-color="#22D3EE" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ghost" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E6FFFA"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="48" fill="#05080F"/>
+  <circle cx="128" cy="108" r="98" fill="url(#glow)"/>
+  <!-- network path: nodes + edges the ghost follows -->
+  <g stroke="#00E5A0" stroke-width="3" stroke-linecap="round" opacity="0.9">
+    <line x1="36" y1="196" x2="86" y2="158"/>
+    <line x1="86" y1="158" x2="128" y2="186"/>
+    <line x1="128" y1="186" x2="176" y2="150"/>
+    <line x1="176" y1="150" x2="220" y2="188"/>
+  </g>
+  <g fill="#00E5A0">
+    <circle cx="36" cy="196" r="7"/>
+    <circle cx="86" cy="158" r="6"/>
+    <circle cx="128" cy="186" r="6"/>
+    <circle cx="176" cy="150" r="6"/>
+    <circle cx="220" cy="188" r="7"/>
+  </g>
+  <g fill="#FF3B5C"><circle cx="220" cy="188" r="3.5"/></g>
+  <!-- ghost silhouette -->
+  <path fill="url(#ghost)" d="M128 34c-34 0-56 26-56 62v74c0 6 8 9 12 4l10-11c3-3 8-3 11 0l7 8c3 3 8 3 11 0l7-8c3-3 8-3 11 0l7 8c3 3 8 3 11 0l10-11c4-5 12-2 12 4v-68c0-36-22-62-53-62z"/>
+  <g fill="#05080F">
+    <ellipse cx="108" cy="92" rx="9" ry="12"/>
+    <ellipse cx="148" cy="92" rx="9" ry="12"/>
+  </g>
+  <g fill="#22D3EE">
+    <circle cx="110" cy="90" r="3.5"/>
+    <circle cx="150" cy="90" r="3.5"/>
+  </g>
+  <path d="M118 118q10 8 20 0" stroke="#05080F" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>
